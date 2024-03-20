@@ -1,0 +1,13 @@
+description: TODO取得時のレスポンスのDTO
+type: object
+properties:
+  id:
+    type: string
+  title:
+    type: string
+  content:
+    type: string
+required:
+  - id
+  - title
+  - content

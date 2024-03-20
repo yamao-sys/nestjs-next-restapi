@@ -1,0 +1,120 @@
+openapi: 3.0.0
+info:
+  title: Todos Controller Schema
+  version: 1.0.0
+paths:
+  /auth/sign_up:
+    post:
+      operationId: signUp
+      description: 会員登録
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignUpDto'
+      responses:
+        '200':
+          description: 会員登録成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignUpResponseDto'
+        '400':
+          description: バリデーションエラー
+          content:
+            application/json:
+              schema:
+                description: バリデーションエラー
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                  message:
+                    type: array
+                    items:
+                      description: TODO取得時のレスポンスのDTO
+                      type: string
+                  error:
+                    type: string
+                required:
+                  - statusCode
+                  - message
+                  - error
+  /auth/sign_in:
+    post:
+      operationId: signIn
+      description: ログイン
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignInDto'
+      responses:
+        '200':
+          description: ログイン成功
+          content:
+            application/json:
+              schema:
+                type: string
+        '400':
+          description: バリデーションエラー
+          content:
+            application/json:
+              schema:
+                description: バリデーションエラー
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                  message:
+                    type: array
+                    items:
+                      description: TODO取得時のレスポンスのDTO
+                      type: string
+                  error:
+                    type: string
+                required:
+                  - statusCode
+                  - message
+                  - error
+components:
+  schemas:
+    SignUpDto:
+      description: 会員登録のリクエストのDTO
+      type: object
+      properties:
+        email:
+          type: string
+          example: test@example.com
+        password:
+          type: string
+      required:
+        - email
+        - password
+    SignUpResponseDto:
+      description: 会員登録のレスポンス
+      type: object
+      properties:
+        id:
+          type: string
+          example: 1
+        email:
+          type: string
+          example: test@example.com
+      required:
+        - id
+        - email
+    SignInDto:
+      description: Sign in params.
+      type: object
+      properties:
+        email:
+          type: string
+          example: test@example.com
+        password:
+          type: string
+      required:
+        - email
+        - password

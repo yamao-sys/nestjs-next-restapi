@@ -1,0 +1,11 @@
+description: 会員登録のリクエストのDTO
+type: object
+properties:
+  email:
+    type: string
+    example: test@example.com
+  password:
+    type: string
+required:
+  - email
+  - password

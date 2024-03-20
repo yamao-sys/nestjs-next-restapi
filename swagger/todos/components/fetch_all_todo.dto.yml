@@ -1,0 +1,7 @@
+description: TODO一覧のレスポンスのDTO
+type: object
+properties:
+  todos:
+    type: array
+    items:
+      $ref: './fetch_todo.dto.yml'

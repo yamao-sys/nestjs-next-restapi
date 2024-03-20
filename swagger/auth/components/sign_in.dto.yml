@@ -1,0 +1,11 @@
+description: Sign in params.
+type: object
+properties:
+  email:
+    type: string
+    example: test@example.com
+  password:
+    type: string
+required:
+  - email
+  - password

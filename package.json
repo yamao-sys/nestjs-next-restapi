@@ -1,0 +1,14 @@
+{
+  "name": "nestjs_next_practice",
+  "version": "1.0.0",
+  "description": "Nest.jsの習得用リポジトリ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@nestjs/cli": "^10.3.2"
+  }
+}

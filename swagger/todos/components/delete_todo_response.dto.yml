@@ -1,0 +1,7 @@
+description: TODO削除のresponse DTO
+type: object
+properties:
+  message:
+    type: string
+required:
+  - message

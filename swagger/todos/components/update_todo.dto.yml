@@ -1,0 +1,10 @@
+description: TODO更新のrequest DTO
+type: object
+properties:
+  title:
+    type: string
+  content:
+    type: string
+required:
+  - title
+  - content

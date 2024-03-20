@@ -1,0 +1,10 @@
+description: TODO更新のresponse DTO
+type: object
+properties:
+  title:
+    type: string
+  content:
+    type: string
+required:
+  - title
+  - content
