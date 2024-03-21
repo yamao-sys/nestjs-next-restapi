@@ -15,7 +15,7 @@ export class TodosModule implements NestModule {
     consumer
       .apply(
         ...OpenApiValidator.middleware({
-          apiSpec: '/api_server/swagger/todos/swagger.yml',
+          apiSpec: '/api_server/app/swagger/todos/swagger.yml',
           validateRequests: true,
           validateResponses: true,
         }),

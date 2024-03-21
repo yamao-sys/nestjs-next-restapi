@@ -1,0 +1,31 @@
+{
+	"name": "app",
+	"version": "0.1.0",
+	"private": true,
+	"scripts": {
+		"dev": "next dev",
+		"build": "next build",
+		"start": "next start",
+		"lint": "next lint",
+		"format": "prettier --write \"**/*.ts\""
+	},
+	"dependencies": {
+		"@aspida/fetch": "^1.14.0",
+		"aspida": "^1.14.0",
+		"eslint-config-prettier": "^9.1.0",
+		"next": "14.1.4",
+		"openapi2aspida": "^0.23.2",
+		"prettier": "^3.2.5",
+		"react": "^18",
+		"react-dom": "^18",
+		"swagger-merger": "^1.5.4"
+	},
+	"devDependencies": {
+		"@types/node": "^20",
+		"@types/react": "^18",
+		"@types/react-dom": "^18",
+		"eslint": "^8",
+		"eslint-config-next": "14.1.4",
+		"typescript": "^5"
+	}
+}

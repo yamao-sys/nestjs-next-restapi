@@ -73,3 +73,20 @@ rm -rf api/todos && npx openapi2aspida -i ../swagger/todos/swagger.yml -o api/to
 【参考】
 ・https://github.com/cdimascio/express-openapi-validator/blob/master/examples/9-nestjs/src/app.module.ts
 ・https://qiita.com/mana-vv/items/6d6946085e360883e5ad
+
+
+## ServerComponentに関して
+https://qiita.com/newbee1939/items/7ce919f9a1a7153582b8
+
+## ServerActions or API?
+https://monotein.com/blog/server-actions-or-api
+
+- Server Actrions
+	- メリット
+		- 手軽でコード量を抑えられる
+		- Typescript一色で書けるので型安全
+	- デメリット
+		- SQLインジェクションなどの脆弱性の危険性 → 適切なセキュリティ対策
+		- バックエンドもTypescriptが扱えるメンバーが揃った体制でないと開発がきつそう
+
+本リポジトリでは従来通りのAPI Routesでやってみる

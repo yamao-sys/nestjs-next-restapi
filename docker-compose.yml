@@ -5,7 +5,6 @@ services:
     volumes:
       - ./api_server:/api_server
       - ./node_modules:/api_server/node_modules
-      - ./swagger:/api_server/swagger
     ports:
       - 8000:1234
     env_file: ./api_server/.env.development
@@ -25,3 +24,17 @@ services:
     volumes:
       - ./db/my.cnf:/etc/mysql/conf.d/my.cnf
       - ./mysql:/var/lib/mysql
+  frontend:
+    build:
+      context: ./frontend
+    volumes:
+      - ./frontend:/frontend
+      - ./api_server/app/swagger:/frontend/swagger
+    command: sh -c "npm run dev"
+    container_name: frontend
+    ports:
+      - 3001:3000
+    env_file: ./frontend/.env.development
+    restart: always
+    tty: true
+    stdin_open: true

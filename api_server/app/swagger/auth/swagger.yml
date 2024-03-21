@@ -20,27 +20,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SignUpResponseDto'
-        '400':
-          description: バリデーションエラー
-          content:
-            application/json:
-              schema:
-                description: バリデーションエラー
-                type: object
-                properties:
-                  statusCode:
-                    type: number
-                  message:
-                    type: array
-                    items:
-                      description: TODO取得時のレスポンスのDTO
-                      type: string
-                  error:
-                    type: string
-                required:
-                  - statusCode
-                  - message
-                  - error
   /auth/sign_in:
     post:
       operationId: signIn
@@ -63,22 +42,7 @@ paths:
           content:
             application/json:
               schema:
-                description: バリデーションエラー
-                type: object
-                properties:
-                  statusCode:
-                    type: number
-                  message:
-                    type: array
-                    items:
-                      description: TODO取得時のレスポンスのDTO
-                      type: string
-                  error:
-                    type: string
-                required:
-                  - statusCode
-                  - message
-                  - error
+                $ref: '#/components/schemas/ValidationErrorResponseDto'
 components:
   schemas:
     SignUpDto:
@@ -97,14 +61,15 @@ components:
       description: 会員登録のレスポンス
       type: object
       properties:
-        id:
-          type: string
-          example: 1
         email:
           type: string
           example: test@example.com
+        errors:
+          type: array
+          items:
+            description: バリデーションエラーメッセージ
+            type: string
       required:
-        - id
         - email
     SignInDto:
       description: Sign in params.
@@ -115,6 +80,28 @@ components:
           example: test@example.com
         password:
           type: string
+        errors:
+          type: array
+          items:
+            description: バリデーションエラーメッセージ
+            type: string
       required:
         - email
         - password
+    ValidationErrorResponseDto:
+      description: バリデーションエラー
+      type: object
+      properties:
+        statusCode:
+          type: number
+        message:
+          type: array
+          items:
+            description: TODO取得時のレスポンスのDTO
+            type: string
+        error:
+          type: string
+      required:
+        - statusCode
+        - message
+        - error

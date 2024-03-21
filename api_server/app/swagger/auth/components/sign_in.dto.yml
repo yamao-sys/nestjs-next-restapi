@@ -6,6 +6,11 @@ properties:
     example: test@example.com
   password:
     type: string
+  errors:
+    type: array
+    items:
+      description: バリデーションエラーメッセージ
+      type: string
 required:
   - email
   - password

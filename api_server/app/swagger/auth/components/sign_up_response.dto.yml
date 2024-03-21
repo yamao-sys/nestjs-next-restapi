@@ -1,12 +1,13 @@
 description: 会員登録のレスポンス
 type: object
 properties:
-  id:
-    type: string
-    example: 1
   email:
     type: string
     example: test@example.com
+  errors:
+    type: array
+    items:
+      description: バリデーションエラーメッセージ
+      type: string
 required:
-  - id
   - email

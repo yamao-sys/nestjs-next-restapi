@@ -5,8 +5,6 @@ import { UsersModule } from 'src/users/users.module';
 import { JwtModule } from '@nestjs/jwt';
 import * as OpenApiValidator from 'express-openapi-validator';
 
-console.log(__dirname);
-
 @Module({
   imports: [
     UsersModule,
@@ -25,7 +23,7 @@ export class AuthModule implements NestModule {
     consumer
       .apply(
         ...OpenApiValidator.middleware({
-          apiSpec: '/api_server/swagger/auth/swagger.yml',
+          apiSpec: '/api_server/app/swagger/auth/swagger.yml',
           validateRequests: true,
           validateResponses: true,
         }),

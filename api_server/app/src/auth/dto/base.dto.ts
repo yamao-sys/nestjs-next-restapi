@@ -12,4 +12,7 @@ export class BaseDto {
   @MinLength(8, { message: 'パスワードは8文字以上で入力をお願いします。' })
   @MaxLength(20, { message: 'パスワードは20文字以上で入力をお願いします。' })
   password: string;
+
+  @ApiProperty()
+  errors: Array<string>;
 }

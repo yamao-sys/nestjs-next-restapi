@@ -16,6 +16,10 @@ export class UsersService {
     return this.userRepository.save(createUserDto);
   }
 
+  save(user: User) {
+    return this.userRepository.save(user);
+  }
+
   findAll() {
     return `This action returns all users`;
   }
