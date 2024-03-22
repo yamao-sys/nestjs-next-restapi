@@ -37,7 +37,7 @@ paths:
           content:
             application/json:
               schema:
-                type: string
+                $ref: '#/components/schemas/SignInResponseDto'
         '400':
           description: バリデーションエラー
           content:
@@ -52,5 +52,7 @@ components:
       $ref: './components/sign_up_response.dto.yml'
     SignInDto:
       $ref: './components/sign_in.dto.yml'
+    SignInResponseDto:
+      $ref: './components/sign_in_response.dto.yml'
     ValidationErrorResponseDto:
       $ref: '../errors.yml#components/schemas/ValidationError'

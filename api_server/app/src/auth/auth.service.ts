@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from 'src/users/users.service';
 
@@ -20,6 +16,10 @@ export class AuthService {
     private userService: UsersService,
     private jwtService: JwtService,
   ) {}
+
+  SIGN_IN_VALIDATION_ERRORS = [
+    'メールアドレス、またはパスワードが異なります。',
+  ];
 
   async signUp(signUpDto: SignUpDto) {
     const { email, password } = signUpDto;
@@ -41,16 +41,22 @@ export class AuthService {
     return { email: user.email };
   }
 
-  async signIn(signinDto: SignInDto) {
+  async validateSignIn(signinDto: SignInDto) {
     const { email, password } = signinDto;
     const user = await this.userService.findOneByEmail(email);
     if (!user) {
-      throw new NotFoundException();
+      return { user: null, errors: this.SIGN_IN_VALIDATION_ERRORS };
     }
 
-    if (!bcrypt.compare(password, user.password)) {
-      throw new UnauthorizedException();
+    const comparedResult = await bcrypt.compare(password, user.password);
+    if (!comparedResult) {
+      return { user: null, errors: this.SIGN_IN_VALIDATION_ERRORS };
     }
+    const errors: string[] = [];
+    return { user, errors };
+  }
+
+  async signIn(user: User) {
     const payload: JwtPayload = { userId: user.id, email: user.email };
     return await this.jwtService.signAsync(payload);
   }

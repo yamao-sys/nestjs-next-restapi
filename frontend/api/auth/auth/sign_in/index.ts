@@ -6,7 +6,7 @@ export type Methods = {
 	post: {
 		status: 200;
 		/** ログイン成功 */
-		resBody: string;
+		resBody: Types.SignInResponseDto;
 		reqBody: Types.SignInDto;
 	};
 };

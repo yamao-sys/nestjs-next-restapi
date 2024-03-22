@@ -5,15 +5,14 @@ import {
   HttpStatus,
   Post,
   Res,
-  ValidationPipe,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Response } from 'express';
 import { ApiCreatedResponse } from '@nestjs/swagger';
 import { SignUpDto } from './dto/sign_up.dto';
-// import { SignUpResponseDto } from 'api/auth/@types';
 import { SignInDto } from './dto/sign_in.dto';
 import { SignUpResponseDto } from './dto/sign_up_response.dto';
+import { SignInResponseDto } from './dto/sign_in_response.dto';
 // import { SignInDto, SignUpDto, SignUpResponseDto } from 'api/auth/@types';
 
 @Controller('auth')
@@ -31,12 +30,18 @@ export class AuthController {
   }
 
   @HttpCode(HttpStatus.OK)
+  @ApiCreatedResponse({ type: SignInResponseDto, description: 'sign in完了' })
   @Post('sign_in')
   async signIn(
     @Res({ passthrough: true }) response: Response,
-    @Body(ValidationPipe) signInDto: SignInDto,
+    @Body() signInDto: SignInDto,
   ) {
-    const token = await this.authService.signIn(signInDto);
-    response.cookie('token', token);
+    const { user, errors } = await this.authService.validateSignIn(signInDto);
+    if (!!errors.length) {
+      return response.send({ errors });
+    }
+
+    const token = await this.authService.signIn(user);
+    response.cookie('token', token).send({ errors });
   }
 }

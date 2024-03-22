@@ -36,7 +36,7 @@ paths:
           content:
             application/json:
               schema:
-                type: string
+                $ref: '#/components/schemas/SignInResponseDto'
         '400':
           description: バリデーションエラー
           content:
@@ -88,6 +88,17 @@ components:
       required:
         - email
         - password
+    SignInResponseDto:
+      description: ログインのレスポンス
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            description: バリデーションエラーメッセージ
+            type: string
+      required:
+        - errors
     ValidationErrorResponseDto:
       description: バリデーションエラー
       type: object

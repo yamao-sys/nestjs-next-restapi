@@ -18,6 +18,11 @@ export type SignInDto = {
 	errors?: string[] | undefined;
 };
 
+/** ログインのレスポンス */
+export type SignInResponseDto = {
+	errors: string[];
+};
+
 /** バリデーションエラー */
 export type ValidationErrorResponseDto = {
 	statusCode: number;

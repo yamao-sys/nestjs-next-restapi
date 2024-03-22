@@ -23,7 +23,7 @@ const api = <T>({ baseURL, fetch }: AspidaClient<T>) => {
 						Methods_1bxrhgq['post']['resBody'],
 						BasicHeaders,
 						Methods_1bxrhgq['post']['status']
-					>(prefix, PATH0, POST, option).text(),
+					>(prefix, PATH0, POST, option).json(),
 				/**
 				 * ログイン
 				 * @returns ログイン成功
@@ -37,7 +37,7 @@ const api = <T>({ baseURL, fetch }: AspidaClient<T>) => {
 						BasicHeaders,
 						Methods_1bxrhgq['post']['status']
 					>(prefix, PATH0, POST, option)
-						.text()
+						.json()
 						.then((r) => r.body),
 				$path: () => `${prefix}${PATH0}`,
 			},
