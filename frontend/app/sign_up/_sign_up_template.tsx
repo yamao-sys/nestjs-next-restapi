@@ -1,15 +1,11 @@
 'use client';
 
-import aspida, { HTTPError } from '@aspida/fetch';
-import api from '@/api/auth/$api';
 import { useState } from 'react';
+import { getApiClient } from '@/lib/Api/client';
+import { InputTextForm } from '@/components/atoms/InputForm';
+import { SubmitButton } from '@/components/atoms/SubmitButton';
 
-const fetchConfig = {
-	baseURL: 'http://localhost:8000',
-	// throwHttpErrors: true, // throw an error on 4xx/5xx, default is false
-};
-
-export function Form() {
+export default function SignUpTemplate() {
 	const [inputEmail, setInputEmail] = useState('');
 	const [inputPassword, setInputPassword] = useState('');
 	const [validationErrors, setValidationErrors] = useState<String[]>([]);
@@ -21,7 +17,7 @@ export function Form() {
 		setInputPassword(e.target.value);
 
 	const handleSubmit = async () => {
-		const client = api(aspida(fetch, fetchConfig));
+		const client = getApiClient();
 		const response = await client.auth.sign_up.post({
 			body: { email: inputEmail, password: inputPassword },
 		});
@@ -47,21 +43,19 @@ export function Form() {
 					validationErrors.map((validationError, i) => (
 						<div key={i}>{validationError}</div>
 					))}
-				<input
-					type="text"
+				<InputTextForm
 					name="email"
 					placeholder="Email"
 					value={inputEmail}
 					onChange={handleChangeInputEmail}
 				/>
-				<input
-					type="password"
+				<InputTextForm
 					name="password"
 					placeholder="Password"
 					value={inputPassword}
 					onChange={handleChangeInputPassword}
 				/>
-				<button onClick={handleSubmit}>登録する</button>
+				<SubmitButton onSubmit={handleSubmit} />
 			</div>
 		</>
 	);
