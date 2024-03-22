@@ -3,7 +3,7 @@ import api from '@/api/auth/$api';
 
 export const getApiClient = (options?: FetchConfig) => {
 	const baseFetchConditions = {
-		baseURL: 'http://localhost:8000',
+		baseURL: process.env.BASE_API_URL,
 	};
 
 	return api(aspida(fetch, { ...baseFetchConditions, ...options }));

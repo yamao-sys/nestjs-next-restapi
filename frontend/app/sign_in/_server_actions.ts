@@ -7,7 +7,7 @@ import { cookies } from 'next/headers';
 export const postSignIn = async (data: SignInDto) => {
 	'use server';
 
-	const client = getApiClient({ baseURL: 'http://web:1234' });
+	const client = getApiClient();
 	const response = await client.auth.sign_in.post({
 		body: { email: data.email, password: data.password },
 	});

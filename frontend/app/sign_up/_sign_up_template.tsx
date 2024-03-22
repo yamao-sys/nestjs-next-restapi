@@ -1,9 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { getApiClient } from '@/lib/Api/client';
 import { InputTextForm } from '@/components/atoms/InputForm';
 import { SubmitButton } from '@/components/atoms/SubmitButton';
+import { postSignUp } from './_server_actions';
 
 export default function SignUpTemplate() {
 	const [inputEmail, setInputEmail] = useState('');
@@ -17,16 +17,13 @@ export default function SignUpTemplate() {
 		setInputPassword(e.target.value);
 
 	const handleSubmit = async () => {
-		const client = getApiClient();
-		const response = await client.auth.sign_up.post({
-			body: { email: inputEmail, password: inputPassword },
+		const response = await postSignUp({
+			email: inputEmail,
+			password: inputPassword,
 		});
 
-		// NOTE: AspidaでAPIクライアントを作成すると、レスポンスが200のもののみとなってしまう
-		// 		 : NestJSのValidationPipeを使うと、バリデーションエラー(400)の時にフロントエンド側で扱いづらくなる
-		//		 : → NestJS側ではValidationPipeを用いず、バリデーションエラーをerrorsに格納して200で返すようにする
-		if (!!response.body.errors?.length) {
-			setValidationErrors(response.body.errors);
+		if (!!response.errors?.length) {
+			setValidationErrors(response.errors);
 			setInputPassword('');
 		} else {
 			// TODO: サンクス画面にリダイレクト
