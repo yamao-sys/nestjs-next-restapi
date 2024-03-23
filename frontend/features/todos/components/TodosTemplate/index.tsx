@@ -1,4 +1,5 @@
 import { FetchAllTodosResponseDto } from '@/api/todos/@types';
+import { TodoList } from '../TodoList';
 
 type Props = {
 	todos: FetchAllTodosResponseDto['todos'];
@@ -7,9 +8,7 @@ type Props = {
 export default function TodosTemplate({ todos }: Props) {
 	return (
 		<>
-			{!!todos?.length
-				? todos.map((todo) => <div>{todo.title}</div>)
-				: '<div>まだTODOが未登録です。</div>'}
+			<TodoList todos={todos} />
 		</>
 	);
 }

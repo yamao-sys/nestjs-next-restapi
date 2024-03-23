@@ -16,7 +16,6 @@ import { TodosService } from './todos.service';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { JwtPayload } from 'src/interfaces/jwt-payload.interface';
 import { ApiCreatedResponse } from '@nestjs/swagger';
-import { DeleteTodoResponseDto } from 'api/todos/@types';
 import { CreateTodoDto } from './dto/create_todo.dto';
 import { UpdateTodoDto } from './dto/update_todo.dto';
 import { CreateTodoResponseDto } from './dto/create_todo_response.dto';
@@ -24,6 +23,7 @@ import { format_validation_errors } from 'src/lib/format_validation_errors';
 import { FetchAllTodosResponseDto } from './dto/find_all_todos_response.dto';
 import { FetchTodoResponseDto } from './dto/fetch_todo_response.dto';
 import { UpdateTodoResponseDto } from './dto/update_todo_response.dto';
+import { DeleteTodoResponseDto } from './dto/delete_todo_response.dto';
 
 @UseGuards(AuthGuard)
 @Controller('todos')
@@ -121,10 +121,11 @@ export class TodosController {
   }
 
   @Delete(':id')
-  async delete(
-    @Request() req: { user: JwtPayload },
-    @Param('id') id: string,
-  ): Promise<DeleteTodoResponseDto> {
+  @ApiCreatedResponse({
+    type: DeleteTodoResponseDto,
+    description: 'ログインユーザの指定したTODOの削除',
+  })
+  async delete(@Request() req: { user: JwtPayload }, @Param('id') id: string) {
     const todo = await this.todosService.read(id, req.user.userId);
     if (!todo) {
       throw new NotFoundException({
