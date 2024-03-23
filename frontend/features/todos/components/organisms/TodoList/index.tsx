@@ -1,9 +1,10 @@
 'use client';
 
 import { FetchAllTodosResponseDto } from '@/api/todos/@types';
-import { deleteTodo } from '../../server_actions/deleteTodo';
+import { deleteTodo } from '@/features/todos/server_actions/deleteTodo';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { BaseStack } from '@/components/atoms/BaseStack';
 
 type Props = {
 	todos: FetchAllTodosResponseDto['todos'];
@@ -30,13 +31,13 @@ export function TodoList({ todos }: Props) {
 		<>
 			{!!showTodos?.length
 				? showTodos.map((todo) => (
-						<div key={todo.id} style={{ display: 'flex' }}>
+						<BaseStack key={todo.id}>
 							<div>{todo.title}</div>
 							<button onClick={() => handleMoveEditPage(todo.id)}>編集</button>
 							<button onClick={() => handleDeleteTodo(todo.id, todo.title)}>
 								削除
 							</button>
-						</div>
+						</BaseStack>
 					))
 				: '<div>まだTODOが未登録です。</div>'}
 		</>

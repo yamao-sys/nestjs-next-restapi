@@ -1,5 +1,4 @@
-import TodosTemplate from '@/features/todos/components/TodosTemplate';
-
+import TodosTemplate from '@/features/todos/components/templates/TodosTemplate';
 import { getTodosApiClient } from '@/lib/Api/client/getTodosApiClient';
 import { handleApiErrors } from '@/lib/handleApiErrors';
 import { HTTPError } from '@aspida/fetch';

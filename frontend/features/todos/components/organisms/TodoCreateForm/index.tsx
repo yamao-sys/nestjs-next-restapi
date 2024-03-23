@@ -1,15 +1,15 @@
 'use client';
 
+import { postCreateTodo } from '@/features/todos/server_actions/postCreateTodo';
 import { useState } from 'react';
-import { postCreateTodo } from '../../server_actions/postCreateTodo';
-import { useRouter } from 'next/navigation';
+import { HTTPError } from '@aspida/fetch';
+import { handleApiErrors } from '@/lib/handleApiErrors';
+import { redirectToTopPage } from '@/features/todos/server_actions/redirectToTopPage';
 
-export function TodosNewTemplate() {
+export function TodoCreateForm() {
 	const [inputTitle, setInputTitle] = useState('');
 	const [inputContent, setInputContent] = useState('');
 	const [validationErrors, setValidationErrors] = useState<String[]>([]);
-
-	const router = useRouter();
 
 	const handleChangeInputTitle = (e: React.ChangeEvent<HTMLInputElement>) =>
 		setInputTitle(e.target.value);
@@ -19,16 +19,24 @@ export function TodosNewTemplate() {
 	) => setInputContent(e.target.value);
 
 	const handleSubmit = async () => {
-		const result = await postCreateTodo({
-			title: inputTitle,
-			content: inputContent,
-		});
+		try {
+			const response = await postCreateTodo({
+				title: inputTitle,
+				content: inputContent,
+			});
 
-		if (!!result?.errors?.length) {
-			setValidationErrors(result.errors);
-		} else {
-			window.alert('TODOの作成に成功しました。');
-			router.push('/todos');
+			if (!!response?.errors?.length) {
+				setValidationErrors(response.errors);
+			} else {
+				window.alert('TODOの作成に成功しました。');
+				await redirectToTopPage();
+			}
+		} catch (error) {
+			if (error instanceof HTTPError) {
+				handleApiErrors(error);
+			}
+
+			console.error(JSON.stringify(error));
 		}
 	};
 

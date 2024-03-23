@@ -1,21 +1,21 @@
 'use client';
 
 import { useState } from 'react';
-import { putUpdateTodo } from '../../server_actions/putUpdateTodo';
-import { useRouter } from 'next/navigation';
 import { FetchTodoResponseDto } from '@/api/todos/@types';
+import { putUpdateTodo } from '@/features/todos/server_actions/putUpdateTodo';
+import { HTTPError } from '@aspida/fetch';
+import { handleApiErrors } from '@/lib/handleApiErrors';
+import { redirectToTopPage } from '@/features/todos/server_actions/redirectToTopPage';
 
 type Props = {
 	id: string;
 	todo: FetchTodoResponseDto | undefined;
 };
 
-export function TodosEditTemplate({ id, todo }: Props) {
+export function TodoUpdateForm({ id, todo }: Props) {
 	const [inputTitle, setInputTitle] = useState(todo?.title ?? '');
 	const [inputContent, setInputContent] = useState(todo?.content ?? '');
 	const [validationErrors, setValidationErrors] = useState<String[]>([]);
-
-	const router = useRouter();
 
 	const handleChangeInputTitle = (e: React.ChangeEvent<HTMLInputElement>) =>
 		setInputTitle(e.target.value);
@@ -25,16 +25,24 @@ export function TodosEditTemplate({ id, todo }: Props) {
 	) => setInputContent(e.target.value);
 
 	const handleSubmit = async () => {
-		const result = await putUpdateTodo(id, {
-			title: inputTitle,
-			content: inputContent,
-		});
+		try {
+			const response = await putUpdateTodo(id, {
+				title: inputTitle,
+				content: inputContent,
+			});
 
-		if (!!result?.errors?.length) {
-			setValidationErrors(result.errors);
-		} else {
-			window.alert('TODOの更新に成功しました。');
-			router.push('/todos');
+			if (!!response?.errors?.length) {
+				setValidationErrors(response.errors);
+			} else {
+				window.alert('TODOの更新に成功しました。');
+				await redirectToTopPage();
+			}
+		} catch (error) {
+			if (error instanceof HTTPError) {
+				handleApiErrors(error);
+			}
+
+			console.error(JSON.stringify(error));
 		}
 	};
 

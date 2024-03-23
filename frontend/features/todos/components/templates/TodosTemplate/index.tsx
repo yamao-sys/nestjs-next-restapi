@@ -1,5 +1,5 @@
 import { FetchAllTodosResponseDto } from '@/api/todos/@types';
-import { TodoList } from '../TodoList';
+import { TodoList } from '../../organisms/TodoList';
 
 type Props = {
 	todos: FetchAllTodosResponseDto['todos'];
