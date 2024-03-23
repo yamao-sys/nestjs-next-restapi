@@ -5,6 +5,8 @@ properties:
     type: string
   content:
     type: string
-required:
-  - title
-  - content
+  errors:
+    type: array
+    items:
+      description: バリデーションエラーメッセージ
+      type: string

@@ -16,16 +16,14 @@ import { TodosService } from './todos.service';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { JwtPayload } from 'src/interfaces/jwt-payload.interface';
 import { ApiCreatedResponse } from '@nestjs/swagger';
-import {
-  DeleteTodoResponseDto,
-  FetchTodoDto,
-  UpdateTodoResponseDto,
-} from 'api/todos/@types';
+import { DeleteTodoResponseDto } from 'api/todos/@types';
 import { CreateTodoDto } from './dto/create_todo.dto';
 import { UpdateTodoDto } from './dto/update_todo.dto';
 import { CreateTodoResponseDto } from './dto/create_todo_response.dto';
 import { format_validation_errors } from 'src/lib/format_validation_errors';
 import { FetchAllTodosResponseDto } from './dto/find_all_todos_response.dto';
+import { FetchTodoResponseDto } from './dto/fetch_todo_response.dto';
+import { UpdateTodoResponseDto } from './dto/update_todo_response.dto';
 
 @UseGuards(AuthGuard)
 @Controller('todos')
@@ -68,10 +66,11 @@ export class TodosController {
   }
 
   @Get(':id')
-  async show(
-    @Request() req: { user: JwtPayload },
-    @Param('id') id: string,
-  ): Promise<FetchTodoDto> {
+  @ApiCreatedResponse({
+    type: FetchTodoResponseDto,
+    description: 'ログインユーザの指定したTODOの取得',
+  })
+  async show(@Request() req: { user: JwtPayload }, @Param('id') id: string) {
     const todo = await this.todosService.read(id, req.user.userId);
     if (!todo) {
       throw new NotFoundException({
@@ -83,11 +82,15 @@ export class TodosController {
   }
 
   @Put(':id')
+  @ApiCreatedResponse({
+    type: UpdateTodoResponseDto,
+    description: 'ログインユーザの指定したTODOの更新',
+  })
   async update(
     @Param('id') id: string,
     @Body() dto: UpdateTodoDto,
     @Request() req: { user: JwtPayload },
-  ): Promise<UpdateTodoResponseDto> {
+  ) {
     const todo = await this.todosService.read(id, req.user.userId);
     if (!todo) {
       throw new NotFoundException({
@@ -95,8 +98,18 @@ export class TodosController {
         message: '該当するTODOがありません。',
       });
     }
+
+    const assignedAttributesTodo =
+      await this.todosService.assignUpdateAttribute(todo, dto);
+    const validationErrors = await this.todosService.validate(
+      assignedAttributesTodo,
+    );
+    if (!!validationErrors.length) {
+      return { errors: format_validation_errors(validationErrors) };
+    }
+
     try {
-      const updatedTodo = await this.todosService.update(todo, dto);
+      const updatedTodo = await this.todosService.save(assignedAttributesTodo);
 
       return { title: updatedTodo.title, content: updatedTodo.content };
     } catch (error) {

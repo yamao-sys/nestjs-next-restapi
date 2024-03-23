@@ -57,7 +57,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/FetchTodoDto'
+                $ref: '#/components/schemas/FetchTodoResponseDto'
         '400':
           $ref: '../errors.yml#responses/400'
         '401':
@@ -119,8 +119,8 @@ components:
   schemas:
     FetchAllTodosResponseDto:
       $ref: './components/fetch_all_todos_response.dto.yml'
-    FetchTodoDto:
-      $ref: './components/fetch_todo.dto.yml'
+    FetchTodoResponseDto:
+      $ref: './components/fetch_todo_response.dto.yml'
     CreateTodoDto:
       $ref: './components/create_todo.dto.yml'
     CreateTodoResponseDto:

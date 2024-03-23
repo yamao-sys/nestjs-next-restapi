@@ -11,7 +11,7 @@ export type FetchAllTodosResponseDto = {
 };
 
 /** TODO取得時のレスポンスのDTO */
-export type FetchTodoDto = {
+export type FetchTodoResponseDto = {
 	id: string;
 	title: string;
 	content: string;
@@ -38,8 +38,9 @@ export type UpdateTodoDto = {
 
 /** TODO更新のresponse DTO */
 export type UpdateTodoResponseDto = {
-	title: string;
-	content: string;
+	title?: string | undefined;
+	content?: string | undefined;
+	errors?: string[] | undefined;
 };
 
 /** TODO削除のresponse DTO */

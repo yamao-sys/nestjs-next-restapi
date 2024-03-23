@@ -4,4 +4,4 @@ properties:
   todos:
     type: array
     items:
-      $ref: './fetch_todo.dto.yml'
+      $ref: './fetch_todo_response.dto.yml'

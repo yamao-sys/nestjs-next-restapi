@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CreateTodoResponseDto {
+export class UpdateTodoResponseDto {
   @ApiProperty({
     example: 'Next.jsの学習',
   })

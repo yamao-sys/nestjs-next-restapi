@@ -7,7 +7,7 @@
 		"build": "next build",
 		"start": "next start",
 		"lint": "next lint",
-		"format": "prettier --write \"**/*.ts\""
+		"format": "prettier --write \"**/*{.ts,.tsx}\""
 	},
 	"dependencies": {
 		"@aspida/fetch": "^1.14.0",

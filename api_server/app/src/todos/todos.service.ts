@@ -2,12 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Todo } from './todo.entity';
 import { Repository } from 'typeorm';
-import {
-  CreateTodoDto,
-  FetchAllTodosDto,
-  UpdateTodoDto,
-} from 'api/todos/@types';
 import { validate } from 'class-validator';
+import { CreateTodoDto } from './dto/create_todo.dto';
+import { UpdateTodoDto } from './dto/update_todo.dto';
 
 @Injectable()
 export class TodosService {
@@ -16,7 +13,7 @@ export class TodosService {
     private readonly todoRepository: Repository<Todo>,
   ) {}
 
-  async findAll(userId: string): Promise<FetchAllTodosDto> {
+  async findAll(userId: string) {
     const todos = await this.todoRepository.find({
       where: { userId },
     });
@@ -41,6 +38,13 @@ export class TodosService {
 
   async validate(todo: Todo) {
     return validate(todo);
+  }
+
+  async assignUpdateAttribute(todo: Todo, dto: UpdateTodoDto) {
+    todo.title = dto.title;
+    todo.content = dto.content;
+
+    return todo;
   }
 
   async save(todo: Todo) {

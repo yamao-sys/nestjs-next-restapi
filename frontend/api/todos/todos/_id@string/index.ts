@@ -6,7 +6,7 @@ export type Methods = {
 	get: {
 		status: 200;
 		/** TODOの取得成功 */
-		resBody: Types.FetchTodoDto;
+		resBody: Types.FetchTodoResponseDto;
 	};
 
 	/** ログインユーザのTODOの更新 */
