@@ -2,10 +2,11 @@
 
 import { useState } from 'react';
 import { InputTextForm } from '@/components/atoms/InputForm';
-import { SubmitButton } from '@/components/atoms/SimpleSubmitButton';
-import { postSignUp } from './_server_actions';
+import { postSignUp } from '@/features/auth/server_actions/postSignUp';
+import { HTTPError } from '@aspida/fetch';
+import { handleApiErrors } from '@/lib/handleApiErrors';
 
-export default function SignUpTemplate() {
+export default function SignUpForm() {
 	const [inputEmail, setInputEmail] = useState('');
 	const [inputPassword, setInputPassword] = useState('');
 	const [validationErrors, setValidationErrors] = useState<String[]>([]);
@@ -16,20 +17,27 @@ export default function SignUpTemplate() {
 	const handleChangeInputPassword = (e: React.ChangeEvent<HTMLInputElement>) =>
 		setInputPassword(e.target.value);
 
-	const handleSubmit = async () => {
-		const response = await postSignUp({
-			email: inputEmail,
-			password: inputPassword,
-		});
+	const handleSignUp = async () => {
+		try {
+			const response = await postSignUp({
+				email: inputEmail,
+				password: inputPassword,
+			});
 
-		if (!!response.errors?.length) {
-			setValidationErrors(response.errors);
-			setInputPassword('');
-		} else {
-			// TODO: サンクス画面にリダイレクト
-			window.alert('会員登録に成功しました！');
-			setInputEmail('');
-			setInputPassword('');
+			if (!!response?.errors?.length) {
+				setValidationErrors(response.errors);
+				setInputPassword('');
+			} else {
+				window.alert('会員登録に成功しました！');
+				setInputEmail('');
+				setInputPassword('');
+			}
+		} catch (error) {
+			if (error instanceof HTTPError) {
+				handleApiErrors(error);
+			}
+
+			console.error(JSON.stringify(error));
 		}
 	};
 
@@ -52,7 +60,7 @@ export default function SignUpTemplate() {
 					value={inputPassword}
 					onChange={handleChangeInputPassword}
 				/>
-				<SubmitButton onSubmit={handleSubmit} title="登録する" />
+				<button onClick={handleSignUp}>登録する</button>
 			</div>
 		</>
 	);

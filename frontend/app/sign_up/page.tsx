@@ -1,4 +1,4 @@
-import SignUpTemplate from './_sign_up_template';
+import SignUpTemplate from '@/features/auth/components/templates/SignUpTemplate';
 
 export default function SignUp() {
 	return (
