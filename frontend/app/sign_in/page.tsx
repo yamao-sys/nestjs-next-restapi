@@ -1,4 +1,4 @@
-import SignInTemplate from './_sign_in_template';
+import SignInTemplate from '@/features/auth/components/templates/SignInTemplate';
 
 export default function SignIn() {
 	return (

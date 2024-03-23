@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { InputTextForm } from '@/components/atoms/InputForm';
-import { SubmitButton } from '@/components/atoms/SubmitButton';
+import { SubmitButton } from '@/components/atoms/SimpleSubmitButton';
 import { postSignUp } from './_server_actions';
 
 export default function SignUpTemplate() {
@@ -52,7 +52,7 @@ export default function SignUpTemplate() {
 					value={inputPassword}
 					onChange={handleChangeInputPassword}
 				/>
-				<SubmitButton onSubmit={handleSubmit} />
+				<SubmitButton onSubmit={handleSubmit} title="登録する" />
 			</div>
 		</>
 	);

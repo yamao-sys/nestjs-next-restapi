@@ -1,11 +1,13 @@
 'use client';
 
 import { InputTextForm } from '@/components/atoms/InputForm';
-import { SubmitButton } from '@/components/atoms/SubmitButton';
+import { postSignIn } from '@/features/auth/server_actions/postSignIn';
+import { redirectToTopPage } from '@/features/todos/server_actions/redirectToTopPage';
+import { handleApiErrors } from '@/lib/handleApiErrors';
+import { HTTPError } from '@aspida/fetch';
 import { useState } from 'react';
-import { postSignIn } from './_server_actions';
 
-export default function SignInTemplate() {
+export default function SignInForm() {
 	const [inputEmail, setInputEmail] = useState('');
 	const [inputPassword, setInputPassword] = useState('');
 	const [validationErrors, setValidationErrors] = useState<String[]>([]);
@@ -15,18 +17,28 @@ export default function SignInTemplate() {
 	const handleChangeInputPassword = (e: React.ChangeEvent<HTMLInputElement>) =>
 		setInputPassword(e.target.value);
 
-	const handleSubmit = async () => {
-		const response = await postSignIn({
-			email: inputEmail,
-			password: inputPassword,
-		});
-		if (!!response?.errors?.length) {
-			setValidationErrors(response.errors);
-			setInputPassword('');
-		} else {
-			window.alert('ログインに成功しました！');
-			setInputEmail('');
-			setInputPassword('');
+	const handleSignIn = async () => {
+		try {
+			const response = await postSignIn({
+				email: inputEmail,
+				password: inputPassword,
+			});
+
+			if (!!response?.errors?.length) {
+				setValidationErrors(response.errors);
+				setInputPassword('');
+			} else {
+				window.alert('ログインに成功しました！');
+				setInputEmail('');
+				setInputPassword('');
+				await redirectToTopPage();
+			}
+		} catch (error) {
+			if (error instanceof HTTPError) {
+				handleApiErrors(error);
+			}
+
+			console.error(JSON.stringify(error));
 		}
 	};
 
@@ -49,7 +61,7 @@ export default function SignInTemplate() {
 					value={inputPassword}
 					onChange={handleChangeInputPassword}
 				/>
-				<SubmitButton onSubmit={handleSubmit} />
+				<button onClick={handleSignIn}>ログインする</button>
 			</div>
 		</>
 	);
