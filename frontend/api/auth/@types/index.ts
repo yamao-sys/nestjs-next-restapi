@@ -7,8 +7,7 @@ export type SignUpDto = {
 
 /** 会員登録のレスポンス */
 export type SignUpResponseDto = {
-	email: string;
-	errors?: string[] | undefined;
+	errors: string[];
 };
 
 /** Sign in params. */

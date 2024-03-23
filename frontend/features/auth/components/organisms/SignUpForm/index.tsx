@@ -24,7 +24,7 @@ export default function SignUpForm() {
 				password: inputPassword,
 			});
 
-			if (!!response?.errors?.length) {
+			if (!!response.errors.length) {
 				setValidationErrors(response.errors);
 				setInputPassword('');
 			} else {
@@ -55,6 +55,7 @@ export default function SignUpForm() {
 					onChange={handleChangeInputEmail}
 				/>
 				<InputTextForm
+					type="password"
 					name="password"
 					placeholder="Password"
 					value={inputPassword}

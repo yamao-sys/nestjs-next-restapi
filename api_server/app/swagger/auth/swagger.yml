@@ -61,16 +61,13 @@ components:
       description: 会員登録のレスポンス
       type: object
       properties:
-        email:
-          type: string
-          example: test@example.com
         errors:
           type: array
           items:
             description: バリデーションエラーメッセージ
             type: string
       required:
-        - email
+        - errors
     SignInDto:
       description: Sign in params.
       type: object

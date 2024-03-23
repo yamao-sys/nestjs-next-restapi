@@ -8,7 +8,6 @@ import { SignUpDto } from './dto/sign_up.dto';
 import { SignInDto } from './dto/sign_in.dto';
 import { User } from 'src/users/entities/user.entity';
 import { validate } from 'class-validator';
-import { format_validation_errors } from 'src/lib/format_validation_errors';
 
 @Injectable()
 export class AuthService {
@@ -21,24 +20,26 @@ export class AuthService {
     'メールアドレス、またはパスワードが異なります。',
   ];
 
-  async signUp(signUpDto: SignUpDto) {
+  async buildNewUser(signUpDto: SignUpDto) {
     const { email, password } = signUpDto;
 
     const user = new User();
     user.email = email;
     user.password = password;
 
-    // バリデーションチェック
-    const validationErrors = await validate(user);
-    if (!!validationErrors.length) {
-      return { email, errors: format_validation_errors(validationErrors) };
-    }
+    return user;
+  }
 
+  async validateSignUp(user: User) {
+    return validate(user);
+  }
+
+  async signUp(user: User) {
+    const origin_password = user.password;
     // ハッシュ化したパスワードを格納
-    user.password = await bcrypt.hash(password, 10);
+    user.password = await bcrypt.hash(origin_password, 10);
 
     await this.userService.save(user);
-    return { email: user.email };
   }
 
   async validateSignIn(signinDto: SignInDto) {

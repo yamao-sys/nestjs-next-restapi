@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   HttpCode,
+  HttpException,
   HttpStatus,
   Post,
   Res,
@@ -13,20 +14,32 @@ import { SignUpDto } from './dto/sign_up.dto';
 import { SignInDto } from './dto/sign_in.dto';
 import { SignUpResponseDto } from './dto/sign_up_response.dto';
 import { SignInResponseDto } from './dto/sign_in_response.dto';
-// import { SignInDto, SignUpDto, SignUpResponseDto } from 'api/auth/@types';
+import { format_validation_errors } from 'src/lib/format_validation_errors';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @HttpCode(HttpStatus.OK)
-  // @ApiResponseデコレータは型側に@ApiProperty()の付与が必要で自動生成したファイルそのまま使用できず
-  // → アクションの戻り値で自動生成された型を指定
-  // 参考: https://docs.nestjs.com/openapi/operations
   @ApiCreatedResponse({ type: SignUpResponseDto, description: 'sign up完了' })
   @Post('sign_up')
-  async signUp(@Body() signupDto: SignUpDto): Promise<SignUpResponseDto> {
-    return this.authService.signUp(signupDto);
+  async signUp(@Body() signUpDto: SignUpDto) {
+    const user = await this.authService.buildNewUser(signUpDto);
+
+    const validationErrors = await this.authService.validateSignUp(user);
+    if (!!validationErrors.length) {
+      return { errors: format_validation_errors(validationErrors) };
+    }
+
+    try {
+      await this.authService.signUp(user);
+      return { errors: [] };
+    } catch (error) {
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   @HttpCode(HttpStatus.OK)
