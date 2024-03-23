@@ -29,7 +29,8 @@ export class Todo extends BaseEntity {
 
   @IsNotEmpty({ message: 'タイトルは必須です。' })
   @Length(1, 255, {
-    message: '$constraint1文字以上$constraint2文字以下での入力をお願いします。',
+    message:
+      'タイトルは$constraint1文字以上$constraint2文字以下での入力をお願いします。',
   })
   @Column()
   title!: string;

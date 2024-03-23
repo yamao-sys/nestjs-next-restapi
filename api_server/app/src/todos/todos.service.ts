@@ -4,10 +4,10 @@ import { Todo } from './todo.entity';
 import { Repository } from 'typeorm';
 import {
   CreateTodoDto,
-  CreateTodoResponseDto,
   FetchAllTodosDto,
   UpdateTodoDto,
 } from 'api/todos/@types';
+import { validate } from 'class-validator';
 
 @Injectable()
 export class TodosService {
@@ -30,21 +30,21 @@ export class TodosService {
     };
   }
 
-  async create(
-    dto: CreateTodoDto,
-    userId: string,
-  ): Promise<CreateTodoResponseDto> {
+  async buildNewTodo(dto: CreateTodoDto, userId: string) {
     const todo = new Todo();
     todo.title = dto.title;
     todo.content = dto.content;
     todo.userId = userId;
 
-    await this.todoRepository.save(todo);
+    return todo;
+  }
 
-    return {
-      title: todo.title,
-      content: todo.content,
-    };
+  async validate(todo: Todo) {
+    return validate(todo);
+  }
+
+  async save(todo: Todo) {
+    return await this.todoRepository.save(todo);
   }
 
   async read(id: string, userId: string): Promise<Todo> {

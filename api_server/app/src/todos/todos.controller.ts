@@ -17,14 +17,15 @@ import { AuthGuard } from 'src/auth/auth.guard';
 import { JwtPayload } from 'src/interfaces/jwt-payload.interface';
 import { ApiCreatedResponse } from '@nestjs/swagger';
 import {
-  CreateTodoResponseDto,
   DeleteTodoResponseDto,
-  FetchAllTodosDto,
   FetchTodoDto,
   UpdateTodoResponseDto,
 } from 'api/todos/@types';
 import { CreateTodoDto } from './dto/create_todo.dto';
 import { UpdateTodoDto } from './dto/update_todo.dto';
+import { CreateTodoResponseDto } from './dto/create_todo_response.dto';
+import { format_validation_errors } from 'src/lib/format_validation_errors';
+import { FetchAllTodosResponseDto } from './dto/find_all_todos_response.dto';
 
 @UseGuards(AuthGuard)
 @Controller('todos')
@@ -32,21 +33,32 @@ export class TodosController {
   constructor(private readonly todosService: TodosService) {}
 
   @Get()
-  @ApiCreatedResponse({ description: 'ログインユーザのTODO一覧取得' })
-  async index(@Request() req: { user: JwtPayload }): Promise<FetchAllTodosDto> {
+  @ApiCreatedResponse({
+    type: FetchAllTodosResponseDto,
+    description: 'ログインユーザのTODO一覧取得',
+  })
+  async index(@Request() req: { user: JwtPayload }) {
     return await this.todosService.findAll(req.user.userId);
   }
 
   @Post()
-  @ApiCreatedResponse({ description: 'ログインユーザのTODO作成成功' })
+  @ApiCreatedResponse({
+    type: CreateTodoResponseDto,
+    description: 'ログインユーザのTODO作成成功',
+  })
   async create(
     @Request() req: { user: JwtPayload },
     @Body() dto: CreateTodoDto,
-  ): Promise<CreateTodoResponseDto> {
-    try {
-      const createdTodo = await this.todosService.create(dto, req.user.userId);
+  ) {
+    const todo = await this.todosService.buildNewTodo(dto, req.user.userId);
+    const validationErrors = await this.todosService.validate(todo);
+    if (!!validationErrors.length) {
+      return { errors: format_validation_errors(validationErrors) };
+    }
 
-      return { title: createdTodo.title, content: createdTodo.content };
+    try {
+      const savedTodo = await this.todosService.save(todo);
+      return { title: savedTodo.title, content: savedTodo.content };
     } catch (error) {
       throw new HttpException(
         'Internal Server Error',

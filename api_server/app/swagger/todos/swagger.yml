@@ -14,7 +14,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/FetchAllTodosDto'
+                $ref: '#/components/schemas/FetchAllTodosResponseDto'
         '400':
           description: バリデーションエラー
           content:
@@ -314,7 +314,7 @@ paths:
                   - message
 components:
   schemas:
-    FetchAllTodosDto:
+    FetchAllTodosResponseDto:
       description: TODO一覧のレスポンスのDTO
       type: object
       properties:
@@ -367,9 +367,11 @@ components:
           type: string
         content:
           type: string
-      required:
-        - title
-        - content
+        errors:
+          type: array
+          items:
+            description: バリデーションエラーメッセージ
+            type: string
     UpdateTodoDto:
       description: TODO更新のrequest DTO
       type: object
