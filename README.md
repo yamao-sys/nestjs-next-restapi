@@ -31,6 +31,7 @@ NestJS × Next.jsのREST APIのサービス構築(OpenAPI aspida)
 
 → Swagger UIは優先度を下げる(YMLファイルによる定義ファイルで仕様の確認を行うイメージ)
 
+
 他にも
 - 型安全性をバックエンド・フロントエンド間で享受できる
 	- バックエンド
