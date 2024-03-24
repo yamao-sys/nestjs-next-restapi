@@ -95,3 +95,28 @@ $ docker-compose build
 
 $ docker-compose up -d
 ```
+
+## コマンド
+### migration
+```
+// backendサーバコンテナでコマンド実行
+$ docker-compose exec web sh
+
+// migrationの作成
+$ npx ts-node ./node_modules/.bin/typeorm migration:generate -d ./data-source.ts ./migrations/path
+
+// migrationの実行
+$ npx ts-node ./node_modules/.bin/typeorm migration:run -d ./data-source.ts
+```
+
+### フロントエンドのAPIクライアントや型の自動生成
+```
+// frontendサーバコンテナでコマンド実行
+$ docker-compose exect frontend sh
+
+// 指定したdomain(api_server/swagger/domain)配下のSwaggerの統合とそれをもとにしたfrontendのAPIクライアント・型の自動生成を行う
+$ sh generate_types.sh -e (domain)
+```
+例) sh generate_types.sh -e todos
+
+→ `frontend/api/todos`配下にAPIクライアントや型が生成される
