@@ -1,92 +1,89 @@
-# nestjs-next-restapi
+# nestjs-next-restapi-sample
 
-Nest.jsのREST API構築(OpenAPI aspida)
+Nest.js × Next.jsのREST APIのサービス構築(OpenAPI aspida)
 
-Nest.jsのアーキテクチャ
-https://zenn.dev/morinokami/articles/nestjs-overview
+## 技術構成
+◆ バックエンド
+- NestJS
+- typeorm
+- class-validator
+- cookie-parser
+- @nestjs/swagger
+- express-openapi-validator
 
-【migration】
-参考
-・https://typeorm.io/migrations#creating-a-new-migration
-・https://qiita.com/jpnm0415shkm/items/f7208f7925adf33e215b
-
-【migration作成】
-npx ts-node ./node_modules/.bin/typeorm migration:generate -d ./data-source.ts ./migrations/path
-
-【migration実行】
-npx ts-node ./node_modules/.bin/typeorm migration:run -d ./data-source.ts
-
-【CRUDの構築】
-参考
-・https://zenn.dev/engineerhikaru/articles/69eb781a7fb5e0#2.-typeorm%E3%81%AE%E3%82%BB%E3%83%83%E3%83%88%E3%82%A2%E3%83%83%E3%83%97
-・https://thriveread.com/typeormmodule-with-forroot-and-forfeature/
-
-【OpenAPI】
-参考
-・https://zenn.dev/dyoshikawa/articles/ed61d6bf0e8ef1
-・https://buildersbox.corp-sansan.com/entry/2023/08/14/182118
-・https://note.com/shift_tech/n/n66f43685f2f9
-・https://qiita.com/m_mitsuhide/items/1bd7c81ba31642de4ba3
-・https://zenn.dev/dyoshikawa/articles/ed61d6bf0e8ef1#express-openapi-validator%E3%81%A7api%E3%83%90%E3%83%AA%E3%83%87%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3
-・https://zenn.dev/kondo/articles/a1cf004449742c#express-openapi-validator
-
-選定ポイント
-- フロントエンドとバックエンドをともにtypescriptを使用していればnpm経由で比較的容易に導入できる
-	- Aspida
-		- https://zenn.dev/dyoshikawa/articles/ed61d6bf0e8ef1
-		- https://github.com/aspida/openapi2aspida
-		- https://github.com/aspida/aspida/tree/main/packages/aspida-fetch#readme
-		- モックサーバとしてmswがある
-			- https://github.com/mswjs/msw
-			- Aspidaで自動生成したレスポンスの型と組み合わせることで型安全なモックサーバを立てる
-				- → バックエンドの実装を待たずにフロントエンドの開発も進められる
-	- OpenApiGeneratorはバックエンドとフロントエンドが異なる言語の時に良さそう
-
-- OpenAPI Generator
-	- https://5thfloor.co.jp/blog/webapp-development-with-openapi-and-typescript
-- openapi-typescript
-	- https://github.com/drwpow/openapi-typescript
-- orval
-	- https://orval.dev/
-
-【openapi.ymlからスキーマファイルを作成する】
-npm run openapi-gen
-
-◆ swaggerを1ファイルにまとめると肥大化してくるな...
+◆ フロントエンド
+- Next.js(v14.1.4)
 - swagger-merger
-	- https://techblog.finatext.com/swagger-merger-5e29bd27907
+- aspida
+- @aspida/fetch
+- openapi2aspida
 
-☆ GoでSwaggerファイル分割を行うにあたっての参考
-・https://techblog.finatext.com/split-swagger-file-generate-code-in-oapi-codegen-c8c2dfbdc39d
+## OpenAPIの選定背景
+バックエンド・フロントエンドを分けて開発することが主流になっている
+→ バックエンドのAPI完成待ちが発生しがち
+→ 事前にスキーマを定義しておくことでバックエンド・フロントエンドそれぞれ並行して開発を進めることができる
+→ 全体としての工数を削減する
 
-ファイル分割したものを一つに
-npx swagger-merger -i ../swagger/todos/index.yml -o ../swagger/todos/swagger.yml
+※ TypeScript一色で開発するような技術スタックのサービスの場合、メンバー皆がフルスタックであることが想定される。
+→ Swagger UIは優先度を下げる(YMLファイルによる定義ファイルで仕様の確認を行うイメージ)
 
-一つにまとめたymlをもとに型ファイルを作成
-rm -rf api/todos && npx openapi2aspida -i ../swagger/todos/swagger.yml -o api/todos
+他にも
+- 型安全性をバックエンド・フロントエンド間で享受できる
+	- バックエンド
+		- リクエスト・レスポンスのバリデーション
+			- 特にExpressではexpress-openapi-validatorを使用することにより、バリデーションコードを随所に仕込まなくても良くなるため、コードの可読性にも寄与
+	- フロントエンド
+		- 型およびAPIクライアントの自動生成 → 工数削減
 
-【参考】
-・https://zenn.dev/ryota0222/articles/b811120b7d2701
-・https://zenn.dev/mizu4ma/articles/d3b937b321f3b4
+今回は、TypeScriptで使用できるOpenAPIのライブラリのうち、手軽に利用できるaspidaを採用。
 
-それぞれのエンドポイントごとにバリデータを設定
-【参考】
-・https://github.com/cdimascio/express-openapi-validator/blob/master/examples/9-nestjs/src/app.module.ts
-・https://qiita.com/mana-vv/items/6d6946085e360883e5ad
+## 起こり得る課題と対応
+### 膨大な長さのSwaggerファイル
+単一のSwagger(YAMLファイル)でAPI定義書を作成すると、開発が進むにつれて量が多くなり複雑性も大きくなることで可読性が損なわれてくる
+→ エンドポイントのドメインごとにディレクトリを作成し、それぞれrootファイルおよびpathとschemaを定義していくことで分割する
 
+ディレクトリ構成は以下
 
-## ServerComponentに関して
-https://qiita.com/newbee1939/items/7ce919f9a1a7153582b8
+- api_server/app/swagger
+	- domain_name
+		- actions.yml(rootファイル)
+		- components(リクエスト・レスポンスのDTO)
+			- *.dto.ts
+		- swagger.yml(分割したファイルを統合したSwagger。swagger-mergerにより作成する。)
+	- errors(共通のschema)
 
-## ServerActions or API?
-https://monotein.com/blog/server-actions-or-api
+それぞれのドメインごとのswagger.ymlを元に
+・frontendでAPIクライアントおよびリクエスト・レスポンスの型を自動生成する(後述する`API定義書と実装の乖離`のコマンドにて)
+・api_serverでリクエストとレスポンスのバリデーションを行う(express-openapi-validator)
 
-- Server Actrions
-	- メリット
-		- 手軽でコード量を抑えられる
-		- Typescript一色で書けるので型安全
-	- デメリット
-		- SQLインジェクションなどの脆弱性の危険性 → 適切なセキュリティ対策
-		- バックエンドもTypescriptが扱えるメンバーが揃った体制でないと開発がきつそう
+### API定義書と実装の乖離
+APIクライアントや型を手動で作成していると、API定義書のSwaggerのメンテナンスが形骸化してしまってくる。
+→ Swaggerを元にフロントエンドのAPIクライアントや型を自動生成する、バックエンドのリクエスト・レスポンスのバリデーションを簡単に行えるように
 
-本リポジトリでは従来通りのAPI Routesでやってみる
+・フロントエンドのAPIクライアントや型の自動生成
+```
+$ docker-compose exect frontend sh
+
+$ sh generate_types.sh -e (domain)
+```
+例) sh generate_types.sh -e todos
+
+→ frontend/api/todos配下にAPIクライアントや型が生成される
+
+## 仕様
+- 認証
+	- 会員登録
+	- ログイン
+
+- TODOリスト
+	- 一覧表示
+	- 作成
+	- 更新
+	- 削除
+
+## 環境構築
+```
+$ docker-compose build
+
+$ docker-compose up -d
+```
