@@ -1,6 +1,6 @@
 # nestjs-next-restapi-sample
 
-Nest.js × Next.jsのREST APIのサービス構築(OpenAPI aspida)
+NestJS × Next.jsのREST APIのサービス構築(OpenAPI aspida)
 
 ## 技術構成
 ◆ バックエンド
