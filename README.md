@@ -31,16 +31,15 @@ NestJS × Next.jsのREST APIのサービス構築(OpenAPI aspida)
 
 → Swagger UIは優先度を下げる(YMLファイルによる定義ファイルで仕様の確認を行うイメージ)
 
-
-他にも
+## OpenAPIを取り入れるメリット
 - 型安全性をバックエンド・フロントエンド間で享受できる
 	- バックエンド
 		- リクエスト・レスポンスのバリデーション
-			- 特にExpressではexpress-openapi-validatorを使用することにより、バリデーションコードを随所に仕込まなくても良くなるため、コードの可読性にも寄与
+			- 特にExpressでは[`express-openapi-validator`](https://github.com/cdimascio/express-openapi-validator)を使用することにより、バリデーションコードを随所に仕込まなくても良くなるため、コードの可読性にも寄与
 	- フロントエンド
 		- 型およびAPIクライアントの自動生成 → 工数削減
 
-今回は、TypeScriptで使用できるOpenAPIのライブラリのうち、手軽に利用できるaspidaを採用。
+今回は、TypeScriptで使用できるOpenAPIのライブラリのうち、手軽に利用できる[`aspida`](https://github.com/aspida/aspida), [`openapi2aspida`](https://github.com/aspida/openapi2aspida)を採用。
 
 ## 起こり得る課題と対応
 ### 膨大な長さのSwaggerファイル
@@ -55,14 +54,14 @@ NestJS × Next.jsのREST APIのサービス構築(OpenAPI aspida)
 		- actions.yml(rootファイル)
 		- components(リクエスト・レスポンスのDTO)
 			- *.dto.ts
-		- swagger.yml(分割したファイルを統合したSwagger。swagger-mergerにより作成する。)
+		- swagger.yml(分割したファイルを統合したSwagger。[`swagger-merger`](https://github.com/WindomZ/swagger-merger)により作成する。)
 	- errors(共通のschema)
 
 それぞれのドメインごとのswagger.ymlを元に
 
-・frontendでAPIクライアントおよびリクエスト・レスポンスの型を自動生成する(後述する`API定義書と実装の乖離`のコマンドにて)
+・frontendでAPIクライアントおよびリクエスト・レスポンスの型を自動生成する(後述する[API定義書と実装の乖離](https://github.com/yamao-sys/nestjs-next-restapi/edit/main/README.md#api%E5%AE%9A%E7%BE%A9%E6%9B%B8%E3%81%A8%E5%AE%9F%E8%A3%85%E3%81%AE%E4%B9%96%E9%9B%A2)のコマンドにて)
 
-・api_serverでリクエストとレスポンスのバリデーションを行う(express-openapi-validator)
+・api_serverでリクエストとレスポンスのバリデーションを行う([`express-openapi-validator`](https://github.com/cdimascio/express-openapi-validator))
 
 ### API定義書と実装の乖離
 APIクライアントや型を手動で作成していると、API定義書のSwaggerのメンテナンスが形骸化してしまってくる。
@@ -77,7 +76,7 @@ $ sh generate_types.sh -e (domain)
 ```
 例) sh generate_types.sh -e todos
 
-→ frontend/api/todos配下にAPIクライアントや型が生成される
+→ `frontend/api/todos`配下にAPIクライアントや型が生成される
 
 ## 仕様
 - 認証
