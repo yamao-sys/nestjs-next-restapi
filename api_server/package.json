@@ -1,5 +1,5 @@
 {
-  "name": "nestjs_next_practice",
+  "name": "nestjs_next_restapi_sample",
   "version": "1.0.0",
   "description": "Nest.jsの習得用リポジトリ",
   "main": "index.js",
